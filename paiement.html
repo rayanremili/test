@@ -376,6 +376,174 @@
       .phone-number-input { font-size:0.8rem; }
     }
 
+  
+    /* ── SERVICES COMPLÉMENTAIRES ── */
+    .services-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    .service-card {
+      background: var(--bg-card, #111318);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 14px;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    .service-icon {
+      width: 44px;
+      height: 44px;
+      background: rgba(37,99,235,0.1);
+      border: 1px solid rgba(37,99,235,0.3);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #2563EB;
+      flex-shrink: 0;
+    }
+    .service-content h3 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text, #F9FAFB);
+      margin: 0 0 0.4rem;
+    }
+    .service-content p {
+      font-size: 0.82rem;
+      color: var(--text-2, #9CA3AF);
+      line-height: 1.6;
+      margin: 0;
+    }
+    .service-cities {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-top: 0.5rem;
+    }
+    .city-tag {
+      font-size: 0.7rem;
+      font-weight: 600;
+      background: rgba(37,99,235,0.1);
+      color: #60a5fa;
+      border: 1px solid rgba(37,99,235,0.2);
+      border-radius: 6px;
+      padding: 2px 8px;
+    }
+    .service-prices {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      background: rgba(255,255,255,0.03);
+      border-radius: 8px;
+      padding: 0.75rem;
+      margin-top: 0.25rem;
+    }
+    .service-price-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.82rem;
+    }
+    .service-price-item span { color: var(--text-2, #9CA3AF); }
+    .service-price-item strong { color: var(--text, #F9FAFB); font-weight: 700; }
+    .btn-service {
+      display: block;
+      text-align: center;
+      background: #25D366;
+      color: #fff;
+      font-size: 0.82rem;
+      font-weight: 700;
+      padding: 0.65rem 1rem;
+      border-radius: 8px;
+      text-decoration: none;
+      margin-top: 0.5rem;
+      transition: opacity .15s;
+    }
+    .btn-service:hover { opacity: 0.9; }
+    @media (max-width: 600px) {
+      .services-grid { grid-template-columns: 1fr; }
+    }
+
+
+    /* ── MODALES SERVICES ── */
+    .svc-overlay {
+      position:fixed;inset:0;background:rgba(0,0,0,0.75);
+      backdrop-filter:blur(6px);z-index:9000;
+      opacity:0;pointer-events:none;transition:opacity .25s;
+    }
+    .svc-overlay.active { opacity:1;pointer-events:all; }
+    .svc-modal {
+      position:fixed;top:50%;left:50%;
+      transform:translate(-50%,-46%);
+      width:min(92vw,520px);max-height:88vh;
+      background:#13151f;border:1px solid rgba(255,255,255,0.1);
+      border-radius:18px;z-index:9001;display:flex;flex-direction:column;
+      opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;
+      box-shadow:0 24px 80px rgba(0,0,0,0.6);
+    }
+    .svc-modal.active { opacity:1;pointer-events:all;transform:translate(-50%,-50%); }
+    .svc-modal-header {
+      display:flex;align-items:center;justify-content:space-between;
+      padding:1.25rem 1.5rem;border-bottom:1px solid rgba(255,255,255,0.08);
+      flex-shrink:0;
+    }
+    .svc-modal-header h3 { margin:0;font-size:1rem;font-weight:700;color:#F9FAFB; }
+    .svc-modal-close {
+      background:none;border:none;color:#6B7280;cursor:pointer;
+      padding:6px;border-radius:8px;display:flex;align-items:center;
+      transition:color .15s,background .15s;
+    }
+    .svc-modal-close:hover { color:#F9FAFB;background:rgba(255,255,255,0.08); }
+    .svc-modal-body { padding:1.5rem;overflow-y:auto; }
+    .svc-form-group { margin-bottom:1rem; }
+    .svc-form-group label {
+      display:block;font-size:0.75rem;font-weight:700;
+      color:#9CA3AF;margin-bottom:0.4rem;text-transform:uppercase;letter-spacing:0.05em;
+    }
+    .svc-form-group input,
+    .svc-form-group select {
+      width:100%;padding:0.75rem 1rem;border-radius:10px;
+      background:rgba(255,255,255,0.05);border:1.5px solid rgba(255,255,255,0.1);
+      font-size:0.88rem;font-family:inherit;color:#F9FAFB;outline:none;
+      transition:border-color .2s;box-sizing:border-box;
+    }
+    .svc-form-group input:focus,
+    .svc-form-group select:focus { border-color:#2563EB; }
+    .svc-form-group select option { background:#1a1d27;color:#F9FAFB; }
+    .svc-form-row { display:grid;grid-template-columns:1fr 1fr;gap:0.75rem; }
+    .svc-price-preview {
+      background:rgba(37,99,235,0.08);border:1px solid rgba(37,99,235,0.2);
+      border-radius:10px;padding:1rem 1.25rem;margin-bottom:1rem;
+    }
+    .svc-price-preview p { margin:0;font-size:0.82rem;color:#9CA3AF; }
+    .svc-price-preview .price { font-size:1.4rem;font-weight:800;color:#F9FAFB;display:block;margin-top:4px; }
+    .svc-submit-btn {
+      width:100%;padding:0.875rem;border:none;border-radius:10px;
+      background:#2563EB;color:#fff;font-size:0.9rem;font-weight:700;
+      font-family:inherit;cursor:pointer;transition:background .15s;
+      display:flex;align-items:center;justify-content:center;gap:0.5rem;
+    }
+    .svc-submit-btn:hover { background:#1d4ed8; }
+    .svc-submit-btn:disabled { opacity:0.5;cursor:not-allowed; }
+    .svc-success {
+      text-align:center;padding:1.5rem 1rem;
+    }
+    .svc-success-icon { font-size:2.5rem;margin-bottom:0.75rem; }
+    .svc-success h4 { font-size:1rem;font-weight:700;color:#F9FAFB;margin:0 0 0.5rem; }
+    .svc-success p { font-size:0.85rem;color:#9CA3AF;line-height:1.6;margin:0; }
+    .svc-type-selector { display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;margin-bottom:1rem; }
+    .svc-type-btn {
+      padding:0.75rem;border:1.5px solid rgba(255,255,255,0.1);border-radius:10px;
+      background:transparent;color:#9CA3AF;font-size:0.82rem;font-weight:600;
+      font-family:inherit;cursor:pointer;transition:all .15s;text-align:center;
+    }
+    .svc-type-btn.active { border-color:#2563EB;color:#F9FAFB;background:rgba(37,99,235,0.1); }
+    .svc-phone-field { display:flex;gap:0.5rem; }
+    .svc-prefix { width:95px;flex-shrink:0; }
+
   </style>
 </head>
 <body>
@@ -441,14 +609,14 @@
             </div>
             <div class="pack-price">9 950 DA</div>
           </label>
-          <label class="pack-option" id="packPremium" onclick="selectPack('premium', 29950)">
+          <label class="pack-option" id="packPremium" onclick="selectPack('premium', 19950)">
             <input type="radio" name="pack" value="premium">
             <div class="pack-dot"></div>
             <div class="pack-info">
               <div class="pack-name">Premium</div>
               <div class="pack-desc">Suivi personnalisé + WhatsApp prioritaire</div>
             </div>
-            <div class="pack-price">29 950 DA</div>
+            <div class="pack-price">19 950 DA</div>
           </label>
         </div>
         <div class="alert alert-warn" id="gratuitAlert" style="display:none; margin-top: 1rem;">
@@ -464,7 +632,7 @@
             <div class="upgrade-box-text">Je suis déjà client <strong>Standard</strong> et je passe au Premium</div>
             <div class="upgrade-box-sub">Tu ne payes que la différence, pas besoin de repayer le Standard.</div>
             <div class="upgrade-price-tag" id="upgradePriceTag">
-              <span class="old-price">29 950 DA</span>
+              <span class="old-price">19 950 DA</span>
               <span>→</span>
               <span class="new-price">20 000 DA</span>
             </div>
@@ -619,9 +787,9 @@ const NOTIFY_URL = `${SUPABASE_URL}/functions/v1/notify-lead`;
 const PACKS = {
   essentiel: { label: 'Essentiel', price: 0, amount: 0 },
   standard:  { label: 'Standard',  price: 9950, amount: 9950 },
-  premium:   { label: 'Premium',   price: 29950, amount: 29950 },
+  premium:   { label: 'Premium',   price: 19950, amount: 19950 },
 };
-const PREMIUM_UPGRADE_AMOUNT = 20000; // 29 950 - 9 950, pour les clients Standard existants
+const PREMIUM_UPGRADE_AMOUNT = 10000; // 19 950 - 9 950, pour les clients Standard existants
 
 let currentPack = 'standard';
 let isUpgrade = false;
@@ -899,10 +1067,408 @@ document.querySelectorAll('input').forEach(el => {
 /* Lire ?pack= dans l'URL et présélectionner le bon pack */
 (function() {
   const param = new URLSearchParams(window.location.search).get('pack');
-  if (param === 'premium')   selectPack('premium',   29950);
+  if (param === 'premium')   selectPack('premium',   19950);
   else if (param === 'standard') selectPack('standard', 9950);
   else if (param === 'essentiel') selectPack('essentiel', 0);
 })();
+
 </script>
+
+<!-- ══════════════════════════════════════
+     SERVICES COMPLÉMENTAIRES
+══════════════════════════════════════ -->
+<style>
+.services-section { max-width:680px; margin:2.5rem auto 0; padding:0 1rem; }
+.services-title { font-size:1rem; font-weight:800; color:var(--text,#F9FAFB); margin-bottom:0.4rem; }
+.services-sub { font-size:0.82rem; color:var(--text-2,#9CA3AF); margin-bottom:1.25rem; }
+.services-grid { display:grid; grid-template-columns:1fr 1fr; gap:0.875rem; }
+.service-card { background:#111318; border:1px solid rgba(255,255,255,0.08); border-radius:14px; padding:1.25rem; }
+.service-icon { width:40px; height:40px; background:rgba(37,99,235,0.1); border:1px solid rgba(37,99,235,0.25); border-radius:10px; display:flex; align-items:center; justify-content:center; color:#2563EB; margin-bottom:0.75rem; }
+.service-card h3 { font-size:0.88rem; font-weight:700; color:var(--text,#F9FAFB); margin:0 0 0.35rem; }
+.service-card p { font-size:0.78rem; color:var(--text-2,#9CA3AF); line-height:1.6; margin:0 0 0.75rem; }
+.city-tags { display:flex; flex-wrap:wrap; gap:0.3rem; margin-bottom:0.75rem; }
+.city-tag { font-size:0.68rem; font-weight:600; background:rgba(37,99,235,0.08); color:#60a5fa; border:1px solid rgba(37,99,235,0.18); border-radius:5px; padding:2px 7px; }
+.city-tag.gold { background:rgba(250,204,21,0.08); color:#FACC15; border-color:rgba(250,204,21,0.2); }
+.service-price-box { background:rgba(255,255,255,0.03); border-radius:8px; padding:0.6rem 0.75rem; margin-bottom:0.75rem; }
+.service-price-row { display:flex; justify-content:space-between; font-size:0.78rem; margin-bottom:0.25rem; }
+.service-price-row:last-child { margin-bottom:0; }
+.service-price-row span { color:#9CA3AF; }
+.service-price-row strong { color:#F9FAFB; font-weight:700; }
+.btn-service { display:block; text-align:center; background:#25D366; color:#fff; font-size:0.78rem; font-weight:700; padding:0.6rem 1rem; border-radius:8px; text-decoration:none; transition:opacity .15s; }
+.btn-service:hover { opacity:0.88; }
+@media(max-width:580px) { .services-grid { grid-template-columns:1fr; } }
+</style>
+
+<div class="services-section">
+  <p class="services-title">Services complémentaires</p>
+  <p class="services-sub">Pour compléter votre dossier Campus France</p>
+  <div class="services-grid">
+
+    <div class="service-card">
+      <div class="service-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      </div>
+      <h3>Attestation d'hébergement</h3>
+      <p>Attestation officielle signée par un hébergeur en France. Document obligatoire pour le dossier visa consulaire.</p>
+      <div class="city-tags">
+        <span class="city-tag">Paris</span>
+        <span class="city-tag">Marseille</span>
+        <span class="city-tag">Angers</span>
+        <span class="city-tag">Amiens</span>
+      </div>
+      <div class="service-price-box">
+        <div class="service-price-row"><span>Standard (48h)</span><strong>1 950 DA</strong></div>
+        <div class="service-price-row"><span>Urgent (24h)</span><strong>2 950 DA</strong></div>
+      </div>
+      <button class="btn-service" onclick="openSvcModal('attestation')" style="border:none;cursor:pointer;">Commander maintenant</button>
+    </div>
+
+    <div class="service-card">
+      <div class="service-icon" style="background:rgba(250,204,21,0.08);border-color:rgba(250,204,21,0.2);color:#FACC15;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg>
+      </div>
+      <h3>Réservation d'hôtel</h3>
+      <p>On trouve et réserve votre hôtel en France pour les premiers jours. Disponible partout en France. Inclus gratuitement dans le Pack Premium.</p>
+      <div class="city-tags">
+        <span class="city-tag gold">Toute la France</span>
+        <span class="city-tag gold">Inclus Premium ✓</span>
+      </div>
+      <div class="service-price-box">
+        <div class="service-price-row"><span>Frais de service</span><strong>3 950 DA</strong></div>
+        <div class="service-price-row"><span>+ prix hotel réel</span><strong>selon budget</strong></div>
+      </div>
+      <button class="btn-service" onclick="openSvcModal('hotel')" style="border:none;cursor:pointer;background:rgba(234,88,12,0.9);">Reserver maintenant</button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+
+</script>
+
+<!-- OVERLAY -->
+<div class="svc-overlay" id="svcOverlay" onclick="closeSvcModal()"></div>
+
+<!-- MODALE ATTESTATION -->
+<div class="svc-modal" id="modalAttestation">
+  <div class="svc-modal-header">
+    <h3>Attestation d'hebergement</h3>
+    <button class="svc-modal-close" onclick="closeSvcModal()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <div class="svc-modal-body">
+    <div id="attestForm">
+      <div class="svc-form-group">
+        <label>Type d'attestation</label>
+        <div class="svc-type-selector">
+          <button class="svc-type-btn active" id="btnStandard" onclick="selectAttestType('standard')">
+            Standard (48h)<br><strong style="color:#F9FAFB;">1 950 DA</strong>
+          </button>
+          <button class="svc-type-btn" id="btnUrgent" onclick="selectAttestType('urgent')">
+            Urgent (24h)<br><strong style="color:#F9FAFB;">2 950 DA</strong>
+          </button>
+        </div>
+      </div>
+      <div class="svc-form-row">
+        <div class="svc-form-group">
+          <label>Prenom</label>
+          <input type="text" id="attestPrenom" placeholder="Ton prenom">
+        </div>
+        <div class="svc-form-group">
+          <label>Nom</label>
+          <input type="text" id="attestNom" placeholder="Ton nom">
+        </div>
+      </div>
+      <div class="svc-form-group">
+        <label>Email</label>
+        <input type="email" id="attestEmail" placeholder="ton@email.com">
+      </div>
+      <div class="svc-form-group">
+        <label>WhatsApp</label>
+        <div class="svc-phone-field">
+          <select class="svc-prefix" id="attestPrefix">
+            <option value="+213">🇩🇿 +213</option>
+            <option value="+33">🇫🇷 +33</option>
+            <option value="+216">🇹🇳 +216</option>
+            <option value="+212">🇲🇦 +212</option>
+          </select>
+          <input type="tel" id="attestWa" placeholder="6XX XXX XXX" style="flex:1;">
+        </div>
+      </div>
+      <div class="svc-form-group">
+        <label>Ville souhaitee</label>
+        <select id="attestVille">
+          <option value="">Choisir une ville</option>
+          <option value="Paris">Paris</option>
+          <option value="Marseille">Marseille</option>
+          <option value="Angers">Angers</option>
+          <option value="Amiens">Amiens</option>
+        </select>
+      </div>
+      <div class="svc-form-row">
+        <div class="svc-form-group">
+          <label>Date d'arrivee</label>
+          <input type="date" id="attestDateArrivee">
+        </div>
+        <div class="svc-form-group">
+          <label>Date de depart</label>
+          <input type="date" id="attestDateDepart">
+        </div>
+      </div>
+      <div class="svc-price-preview" id="attestPriceBox">
+        <p>Montant a payer</p>
+        <span class="price" id="attestPriceLabel">1 950 DA</span>
+        <p style="margin-top:6px;font-size:0.75rem;">Paiement par BaridiMob ou CCP apres confirmation</p>
+      </div>
+      <button class="svc-submit-btn" onclick="submitAttestation()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+        Confirmer la commande
+      </button>
+    </div>
+    <div class="svc-success" id="attestSuccess" style="display:none;">
+      <div class="svc-success-icon">✅</div>
+      <h4>Commande enregistree !</h4>
+      <p>On t'a envoye un email de confirmation. On te contacte sur WhatsApp dans les prochaines heures pour les details du paiement et l'envoi de l'attestation.</p>
+    </div>
+  </div>
+</div>
+
+<!-- MODALE HOTEL -->
+<div class="svc-modal" id="modalHotel">
+  <div class="svc-modal-header">
+    <h3>Reservation d'hotel en France</h3>
+    <button class="svc-modal-close" onclick="closeSvcModal()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <div class="svc-modal-body">
+    <div id="hotelForm">
+      <div class="svc-form-row">
+        <div class="svc-form-group">
+          <label>Prenom</label>
+          <input type="text" id="hotelPrenom" placeholder="Ton prenom">
+        </div>
+        <div class="svc-form-group">
+          <label>Nom</label>
+          <input type="text" id="hotelNom" placeholder="Ton nom">
+        </div>
+      </div>
+      <div class="svc-form-group">
+        <label>Email</label>
+        <input type="email" id="hotelEmail" placeholder="ton@email.com">
+      </div>
+      <div class="svc-form-group">
+        <label>WhatsApp</label>
+        <div class="svc-phone-field">
+          <select class="svc-prefix" id="hotelPrefix">
+            <option value="+213">🇩🇿 +213</option>
+            <option value="+33">🇫🇷 +33</option>
+            <option value="+216">🇹🇳 +216</option>
+            <option value="+212">🇲🇦 +212</option>
+          </select>
+          <input type="tel" id="hotelWa" placeholder="6XX XXX XXX" style="flex:1;">
+        </div>
+      </div>
+      <div class="svc-form-group">
+        <label>Ville</label>
+        <input type="text" id="hotelVille" placeholder="Paris, Lyon, Marseille...">
+      </div>
+      <div class="svc-form-row">
+        <div class="svc-form-group">
+          <label>Date d'arrivee</label>
+          <input type="date" id="hotelArrivee">
+        </div>
+        <div class="svc-form-group">
+          <label>Date de depart</label>
+          <input type="date" id="hotelDepart">
+        </div>
+      </div>
+      <div class="svc-form-row">
+        <div class="svc-form-group">
+          <label>Budget par nuit</label>
+          <select id="hotelBudget">
+            <option value="">Selectionnez</option>
+            <option value="Economique (-50 EUR/nuit)">Economique (-50 EUR/nuit)</option>
+            <option value="Moyen (50-100 EUR/nuit)">Moyen (50-100 EUR/nuit)</option>
+            <option value="Confort (100-150 EUR/nuit)">Confort (100-150 EUR/nuit)</option>
+          </select>
+        </div>
+        <div class="svc-form-group">
+          <label>Nombre de personnes</label>
+          <select id="hotelPersonnes">
+            <option value="1">1 personne</option>
+            <option value="2">2 personnes</option>
+            <option value="3+">3 personnes et plus</option>
+          </select>
+        </div>
+      </div>
+      <div class="svc-form-group">
+        <label>Informations supplementaires (optionnel)</label>
+        <input type="text" id="hotelNote" placeholder="Proche de l'universite, parking...">
+      </div>
+      <div class="svc-price-preview" style="background:rgba(234,88,12,0.08);border-color:rgba(234,88,12,0.2);">
+        <p>Frais de service NextStage</p>
+        <span class="price">3 950 DA</span>
+        <p style="margin-top:6px;font-size:0.75rem;">+ prix reel de l'hotel. Paiement apres confirmation de la reservation.</p>
+      </div>
+      <button class="svc-submit-btn" style="background:#EA580C;" onclick="submitHotel()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+        Confirmer la demande
+      </button>
+    </div>
+    <div class="svc-success" id="hotelSuccess" style="display:none;">
+      <div class="svc-success-icon">✅</div>
+      <h4>Demande enregistree !</h4>
+      <p>On t'a envoye un email de confirmation. On te contacte sur WhatsApp sous 24h avec les options d'hotels disponibles.</p>
+    </div>
+  </div>
+</div>
+
+
+<script>
+/* ════ SERVICES MODALES ════ */
+const SB_URL_SVC = 'https://xrxlteycmcmztdqscfeq.supabase.co';
+const SB_KEY_SVC = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhyeGx0ZXljbWNtenRkcXNjZmVxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyMDk5NDUsImV4cCI6MjA5Njc4NTk0NX0.nW_isNhNwAjWdzahAsccVE6kPsAJR2_ZBdTT6iDFh-s';
+const NOTIFY_SVC = SB_URL_SVC + '/functions/v1/notify-lead';
+const EMAIL_SVC  = SB_URL_SVC + '/functions/v1/send-email';
+
+let currentAttestType = 'standard';
+
+function openSvcModal(type) {
+  document.getElementById('svcOverlay').classList.add('active');
+  document.getElementById(type === 'attestation' ? 'modalAttestation' : 'modalHotel').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeSvcModal() {
+  document.getElementById('svcOverlay').classList.remove('active');
+  document.querySelectorAll('.svc-modal').forEach(m => m.classList.remove('active'));
+  document.body.style.overflow = '';
+}
+
+function selectAttestType(type) {
+  currentAttestType = type;
+  document.getElementById('btnStandard').classList.toggle('active', type === 'standard');
+  document.getElementById('btnUrgent').classList.toggle('active', type === 'urgent');
+  document.getElementById('attestPriceLabel').textContent = type === 'urgent' ? '2 950 DA' : '1 950 DA';
+}
+
+async function submitAttestation() {
+  const prenom = document.getElementById('attestPrenom').value.trim();
+  const nom    = document.getElementById('attestNom').value.trim();
+  const email  = document.getElementById('attestEmail').value.trim();
+  const wa     = document.getElementById('attestPrefix').value + document.getElementById('attestWa').value.trim();
+  const ville  = document.getElementById('attestVille').value;
+  const d1     = document.getElementById('attestDateArrivee').value;
+  const d2     = document.getElementById('attestDateDepart').value;
+
+  if (!prenom || !email || !wa || !ville) {
+    alert('Merci de remplir tous les champs obligatoires.');
+    return;
+  }
+
+  const btn = document.querySelector('#attestForm .svc-submit-btn');
+  btn.disabled = true;
+  btn.textContent = 'Envoi en cours...';
+
+  const record = {
+    prenom, nom, email, whatsapp: wa, ville,
+    urgence: currentAttestType,
+    dates_sejour: d1 && d2 ? d1 + ' au ' + d2 : '',
+    montant: currentAttestType === 'urgent' ? 2950 : 1950
+  };
+
+  try {
+    // Sauvegarder dans Supabase
+    await fetch(SB_URL_SVC + '/rest/v1/attestation_orders', {
+      method: 'POST',
+      headers: { 'apikey': SB_KEY_SVC, 'Authorization': 'Bearer ' + SB_KEY_SVC, 'Content-Type': 'application/json' },
+      body: JSON.stringify(record)
+    });
+
+    // Notifier admin
+    await fetch(NOTIFY_SVC, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + SB_KEY_SVC },
+      body: JSON.stringify({ type: 'attestation', record })
+    });
+
+    // Email au client
+    await fetch(EMAIL_SVC, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + SB_KEY_SVC },
+      body: JSON.stringify({ type: 'attestation_confirm', email, record: { ...record, prenom } })
+    });
+
+    document.getElementById('attestForm').style.display = 'none';
+    document.getElementById('attestSuccess').style.display = 'block';
+  } catch(e) {
+    btn.disabled = false;
+    btn.textContent = 'Confirmer la commande';
+    alert('Une erreur est survenue. Reessaie ou contacte-nous sur WhatsApp.');
+  }
+}
+
+async function submitHotel() {
+  const prenom    = document.getElementById('hotelPrenom').value.trim();
+  const nom       = document.getElementById('hotelNom').value.trim();
+  const email     = document.getElementById('hotelEmail').value.trim();
+  const wa        = document.getElementById('hotelPrefix').value + document.getElementById('hotelWa').value.trim();
+  const ville     = document.getElementById('hotelVille').value.trim();
+  const arrivee   = document.getElementById('hotelArrivee').value;
+  const depart    = document.getElementById('hotelDepart').value;
+  const budget    = document.getElementById('hotelBudget').value;
+  const personnes = document.getElementById('hotelPersonnes').value;
+  const note      = document.getElementById('hotelNote').value.trim();
+
+  if (!prenom || !email || !wa || !ville || !arrivee || !depart) {
+    alert('Merci de remplir tous les champs obligatoires.');
+    return;
+  }
+
+  const btn = document.querySelector('#hotelForm .svc-submit-btn');
+  btn.disabled = true;
+  btn.textContent = 'Envoi en cours...';
+
+  const record = {
+    prenom, nom, email, whatsapp: wa, ville,
+    date_arrivee: arrivee, date_depart: depart,
+    budget, nb_personnes: personnes, note,
+    montant: 3950
+  };
+
+  try {
+    await fetch(SB_URL_SVC + '/rest/v1/hotel_orders', {
+      method: 'POST',
+      headers: { 'apikey': SB_KEY_SVC, 'Authorization': 'Bearer ' + SB_KEY_SVC, 'Content-Type': 'application/json' },
+      body: JSON.stringify(record)
+    });
+
+    await fetch(NOTIFY_SVC, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + SB_KEY_SVC },
+      body: JSON.stringify({ type: 'hotel', record })
+    });
+
+    await fetch(EMAIL_SVC, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + SB_KEY_SVC },
+      body: JSON.stringify({ type: 'hotel_confirm', email, record: { ...record, prenom } })
+    });
+
+    document.getElementById('hotelForm').style.display = 'none';
+    document.getElementById('hotelSuccess').style.display = 'block';
+  } catch(e) {
+    btn.disabled = false;
+    btn.textContent = 'Confirmer la demande';
+    alert('Une erreur est survenue. Reessaie ou contacte-nous sur WhatsApp.');
+  }
+}
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSvcModal(); });
+</script>
+
 </body>
 </html>
