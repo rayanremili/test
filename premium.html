@@ -1118,30 +1118,15 @@
     .student-page .phone-number-input:focus { border-color:var(--blue); box-shadow:0 0 0 3px rgba(37,99,235,0.14); z-index:2; }
     .student-page .phone-number-input::placeholder { color:var(--text-dim); }
 
-  
-    .google-login-btn {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.75rem;
-      width: 100%;
-      padding: 0.875rem 1.25rem;
-      background: #ffffff;
-      color: #1f2937;
-      border: none;
-      border-radius: 12px;
-      font-size: 0.95rem;
-      font-weight: 600;
-      font-family: inherit;
-      cursor: pointer;
-      margin: 1.25rem 0 0.5rem;
-      transition: opacity .15s, transform .1s;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+      .google-login-btn {
+      display:flex;align-items:center;justify-content:center;gap:0.75rem;
+      width:100%;padding:0.875rem 1.25rem;background:#ffffff;color:#1f2937;
+      border:none;border-radius:12px;font-size:0.95rem;font-weight:600;
+      font-family:inherit;cursor:pointer;margin:1.25rem 0 0.5rem;
+      transition:opacity .15s,transform .1s;box-shadow:0 2px 8px rgba(0,0,0,0.3);
     }
-    .google-login-btn:hover { opacity: 0.92; transform: translateY(-1px); }
-    .google-login-btn:active { transform: translateY(0); }
-    .google-login-btn.loading { opacity: 0.6; cursor: not-allowed; }
-
+    .google-login-btn:hover{opacity:0.92;transform:translateY(-1px);}
+    .google-login-btn:disabled{opacity:0.6;cursor:not-allowed;}
   </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -1153,8 +1138,8 @@
 <div class="login-page" id="loginPage">
   <div class="login-box">
     <div class="login-logo">Next<em>Stage</em></div>
-    <div class="login-pack-badge"><span style="display:inline-flex;align-items:center;gap:5px;background:rgba(250,204,21,0.12);border:1px solid rgba(250,204,21,0.3);color:#FACC15;padding:4px 12px;border-radius:999px;font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;"><i data-lucide="star" style="width:12px;height:12px;"></i>Pack Premium</span></div>
-    <div class="login-label">Espace membre privé · Accès réservé</div>
+    <div class="login-pack-badge"><span style="background:rgba(250,204,21,0.1);border-color:rgba(250,204,21,0.3);color:var(--amber);display:inline-flex;align-items:center;gap:5px;"><i data-lucide="crown" style="width:12px;height:12px;"></i>Pack Premium</span></div>
+    <div class="login-label">Espace membre prive - acces reserve</div>
 
     <button class="google-login-btn" onclick="loginWithGoogle()" id="googleBtn">
       <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
@@ -1165,14 +1150,13 @@
       <i data-lucide="circle-x"></i>
       <span id="loginErrorMsg">Une erreur est survenue.</span>
     </div>
-
     <div class="login-footer">
       Tu n'as pas encore de compte ?
-      <a href="https://nextstagefr.com/paiement.html" style="color:var(--copper,#CB5A32)">Voir les offres →</a>
+      <a href="https://nextstagefr.com/paiement.html" style="color:var(--amber)">Voir les offres →</a>
     </div>
     <div class="login-footer" style="margin-top:0.5rem;">
-      Un problème de connexion ?
-      <a href="https://wa.me/33759804462" style="color:var(--copper,#CB5A32)">Contacter NextStage →</a>
+      Un probleme de connexion ?
+      <a href="https://wa.me/33759804462" style="color:var(--amber)">Contacter NextStage →</a>
     </div>
   </div>
 </div>
@@ -2656,6 +2640,42 @@ const _SB_HEADS = {
   'Prefer': 'resolution=merge-duplicates'
 };
 
+async function syncSaveToSupabase() {
+  try {
+    const identity = getStudentIdentity();
+    const wa = identity?.whatsapp
+            || JSON.parse(localStorage.getItem(SESSION_KEY) || 'null')?.whatsapp;
+    if (!wa) return;
+
+    // Lire toutes les données locales
+    const prenom  = localStorage.getItem(NAME_KEY) || identity?.prenom || identity?.name || '';
+    const rentree = identity?.rentree || '';
+    const checks  = JSON.parse(localStorage.getItem('ns_checks') || '{}');
+    const tcfDone = JSON.parse(localStorage.getItem('ns_tcf_done') || '[]');
+
+    // Upsert Supabase via POST + on_conflict sur whatsapp
+    const res = await fetch(_SB_URL + '/rest/v1/student_data?on_conflict=whatsapp', {
+      method: 'POST',
+      headers: {
+        'apikey':        _SB_KEY,
+        'Authorization': 'Bearer ' + _SB_KEY,
+        'Content-Type':  'application/json',
+        'Prefer':        'resolution=merge-duplicates'
+      },
+      body: JSON.stringify({
+        whatsapp:   wa,
+        prenom:     prenom,
+        rentree:    rentree,
+        checks:     checks,
+        tcf_done:   tcfDone,
+        updated_at: new Date().toISOString()
+      })
+    });
+
+    if (!res.ok) {
+      const err = await res.text();
+      console.warn('[sync] save error', res.status, err);
+    }
   } catch(e) {
     console.warn('[sync] save error', e.message);
   }
@@ -2707,336 +2727,24 @@ async function syncRestoreSession(whatsapp) {
   }
 }
 
-/* ════ AUTH ════
-   Code d'accès partagé donné par Rayan par WhatsApp après validation
-   du paiement (voir admin → "Valider"). Pour changer le code :
-   1. Calcule le SHA-256 du nouveau code (ex: sha256.online)
-   2. Remplace ACCESS_HASH ci-dessous
-   Code par défaut : NEXTSTAGE-PREMIUM-2026
-   IMPORTANT : ce code DOIT être différent de celui de l'espace Standard,
-   sinon n'importe quel client Standard pourrait accéder au Premium. */
-const ACCESS_HASH = 'e1d435aed9fdce7ff3a15ec8fea6db64914fdce25f78d57b8fda724d5f613177';
-
-/* ════ SECURITY - Rate limiting + Supabase WA check ════ */
-const MAX_ATTEMPTS = 5;
-const LOCKOUT_MS   = 15 * 60 * 1000; // 15 minutes
-const ATTEMPT_KEY  = 'ns_login_attempts';
-
-function getAttempts() {
-  try { return JSON.parse(localStorage.getItem(ATTEMPT_KEY) || '{"count":0,"ts":0}'); }
-  catch { return {count:0, ts:0}; }
-}
-function incAttempts() {
-  const a = getAttempts();
-  a.count += 1; a.ts = Date.now();
-  localStorage.setItem(ATTEMPT_KEY, JSON.stringify(a));
-  return a.count;
-}
-function resetAttempts() {
-  localStorage.removeItem(ATTEMPT_KEY);
-}
-function isLockedOut() {
-  const a = getAttempts();
-  if (a.count >= MAX_ATTEMPTS) {
-    const elapsed = Date.now() - a.ts;
-    if (elapsed < LOCKOUT_MS) return Math.ceil((LOCKOUT_MS - elapsed) / 60000);
-    resetAttempts(); // lockout expiré
-  }
-  return 0;
-}
-
-async function checkWaInSupabase(whatsapp, inputCode) {
-  try {
-    const normalize = (n) => n.replace(/\D/g, '');
-    const input = normalize(whatsapp);
-    if (input.length < 8) return false;
-
-    // Chercher le paiement avec ce numéro et ce pack
-    const url = _SB_URL + '/rest/v1/payments?status=eq.validated&pack=eq.premium&select=whatsapp,access_code';
-    const r = await fetch(url, {
-      headers: { 'apikey': _SB_KEY, 'Authorization': 'Bearer ' + _SB_KEY }
-    });
-
-    if (!r.ok) return false;
-    const data = await r.json();
-    if (!Array.isArray(data) || data.length === 0) return false;
-
-    return data.some(p => {
-      if (!p.whatsapp) return false;
-      const stored = normalize(p.whatsapp);
-
-      // Vérifier le numéro WhatsApp
-      const inputSuffix  = input.slice(-9);
-      const storedSuffix = stored.slice(-9);
-      if (inputSuffix !== storedSuffix) return false;
-      const inputPrefix  = input.slice(0, input.length - 9);
-      const storedPrefix = stored.slice(0, stored.length - 9);
-      if (inputPrefix && storedPrefix && inputPrefix !== storedPrefix) return false;
-
-      // Vérifier le code d'accès personnel
-      if (!p.access_code || !inputCode) return false;
-      return p.access_code.trim().toUpperCase() === inputCode.trim().toUpperCase();
-    });
-  } catch(e) {
-    console.warn('[checkWa]', e.message);
-    return false;
-  }
-}
-
-const TCF_KEY     = 'ns_tcf_done';
-
-  catch { return null; }
-}
-
-
-/* ── Supabase ── */
-const SUPABASE_URL = 'https://xrxlteycmcmztdqscfeq.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhyeGx0ZXljbWNtenRkcXNjZmVxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyMDk5NDUsImV4cCI6MjA5Njc4NTk0NX0.nW_isNhNwAjWdzahAsccVE6kPsAJR2_ZBdTT6iDFh-s';
-const NOTIFY_URL = `${SUPABASE_URL}/functions/v1/notify-lead`;
-
-async function sha256(msg) {
-  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(msg));
-  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
-}
-}
-
-  const input    = document.getElementById('loginInput');
-  const prefix   = document.getElementById('loginPrefix')?.value || '+213';
-  const waRaw    = (document.getElementById('loginWa')?.value || '').trim().replace(/^0+/, '');
-  const whatsapp = waRaw ? prefix + waRaw : '';
-  const inputCode = input.value.trim();
-
-  // 1. Valider le numero WhatsApp
-  if (!waRaw || waRaw.length < 7) {
-    document.getElementById('loginWa')?.classList.add('shake');
-    msgEl.textContent = 'Entre ton numero WhatsApp.';
-    errorEl.style.display = 'flex';
-    setTimeout(() => document.getElementById('loginWa')?.classList.remove('shake'), 500);
-    return;
-  }
-
-  // 2. Valider le code (non vide)
-  if (!inputCode || inputCode.length < 6) {
-    input.classList.add('shake');
-    msgEl.textContent = 'Entre ton code personnel.';
-    errorEl.style.display = 'flex';
-    setTimeout(() => input.classList.remove('shake'), 500);
-    return;
-  }
-
-  // 3. Verifier WhatsApp + code personnel dans Supabase
-  msgEl.textContent = 'Verification en cours...';
-  errorEl.style.display = 'flex';
-  errorEl.style.background = 'rgba(37,99,235,0.08)';
-  errorEl.style.borderColor = 'rgba(37,99,235,0.2)';
-  errorEl.style.color = '#93c5fd';
-
-  const waOk = await checkWaInSupabase(whatsapp, inputCode);
-
-  errorEl.style.background = '';
-  errorEl.style.borderColor = '';
-  errorEl.style.color = '';
-
-  if (!waOk) {
-    incAttempts();
-    const rem = MAX_ATTEMPTS - getAttempts().count;
-    input.classList.add('shake');
-    document.getElementById('loginWa')?.classList.add('shake');
-    msgEl.textContent = rem > 0
-      ? `Numero ou code incorrect. ${rem} tentative${rem > 1 ? 's' : ''} restante${rem > 1 ? 's' : ''}.`
-      : 'Compte bloque 15 minutes.';
-    errorEl.style.display = 'flex';
-    setTimeout(() => {
-      input.classList.remove('shake');
-      document.getElementById('loginWa')?.classList.remove('shake');
-    }, 500);
-    return;
-  }
-
-  // 4. Tout correct
-  resetAttempts();
-  errorEl.style.display = 'none';
-  localStorage.setItem(SESSION_KEY, JSON.stringify({ ts: Date.now(), whatsapp }));
-  const existing = getStudentIdentity() || {};
-  existing.whatsapp = whatsapp;
-  localStorage.setItem(STUDENT_KEY, JSON.stringify(existing));
-  localStorage.setItem(WHATSAPP_KEY, whatsapp);
-  showApp();
-}
-
-/* ════ GOOGLE AUTH — SUPABASE ════ */
-
-const STUDENT_KEY  = 'ns_student_identity';
-const CHECKS_KEY   = 'ns_checks';
-
-}
-
-function doLogout() {
-  localStorage.removeItem(SESSION_KEY);
-  localStorage.removeItem(STUDENT_KEY);
-  // Déconnecter Supabase Auth
-  fetch(_GAUTH_SB_URL + '/auth/v1/logout', {
-    method: 'POST',
-    headers: { 'apikey': _GAUTH_SB_KEY, 'Authorization': 'Bearer ' + (JSON.parse(localStorage.getItem(SESSION_KEY)||'{}')?.access_token || '') }
-  }).finally(() => location.reload());
-}
-
-
-/* Gérer le retour OAuth — fragment ou code dans l'URL */
-  });
-  if (!res.ok) return false;
-  const user = await res.json();
-  const email = user.email;
-  if (!email) return false;
-
-  // Vérifier dans payments si cet email a un accès standard validé
-  const chk = await fetch(
-    _GAUTH_SB_URL + '/rest/v1/payments?email=ilike.' + encodeURIComponent(email) + '&status=eq.validated&pack=eq.premium&limit=1',
-    { headers: { 'apikey': _GAUTH_SB_KEY, 'Authorization': 'Bearer ' + access_token } }
-  );
-  const pays = await chk.json();
-
-  if (!Array.isArray(pays) || pays.length === 0) {
-    // Vérifier si email connu mais pack différent
-    const chk2 = await fetch(
-      _GAUTH_SB_URL + '/rest/v1/payments?email=ilike.' + encodeURIComponent(email) + '&status=eq.validated&limit=1',
-      { headers: { 'apikey': _GAUTH_SB_KEY, 'Authorization': 'Bearer ' + access_token } }
-    );
-    const pays2 = await chk2.json();
-    const errEl = document.getElementById('loginError');
-    const msgEl = document.getElementById('loginErrorMsg');
-    errEl.style.display = 'flex';
-    if (Array.isArray(pays2) && pays2.length > 0 && pays2[0].pack === 'premium') {
-      msgEl.textContent = 'Ton compte est Premium. Accède à ton espace Premium.';
-      setTimeout(() => { window.location.href = 'premium.html'; }, 2000);
-    } else {
-      msgEl.textContent = 'Aucun accès actif trouvé pour cet email. Vérifie que tu as bien payé ou contacte-nous.';
-    }
-    return false;
-  }
-
-  const payment = pays[0];
-
-  // Sauvegarder la session
-  localStorage.setItem(SESSION_KEY, JSON.stringify({
-    ts: Date.now(),
-    email,
-    access_token,
-    refresh_token,
-    prenom: user.user_metadata?.full_name?.split(' ')[0] || email.split('@')[0]
-  }));
-
-  // Sauvegarder l'identité
-  const identity = getStudentIdentity() || {};
-  identity.email  = email;
-  identity.prenom = user.user_metadata?.full_name?.split(' ')[0] || identity.prenom || '';
-  identity.avatar = user.user_metadata?.avatar_url || '';
-  localStorage.setItem(STUDENT_KEY, JSON.stringify(identity));
-  localStorage.setItem(NAME_KEY, identity.prenom);
-
-  // Nettoyer l'URL
-  window.history.replaceState({}, '', window.location.pathname);
-
-  return true;
-}
-
-  }
-
-  // 2. Session existante
-  initAuth();
-    // Vérifier que la session est pas expirée (24h)
-    if (Date.now() - sess.ts < 24 * 60 * 60 * 1000) {
-      showApp();
-      return;
-    } else {
-      localStorage.removeItem(SESSION_KEY);
-    }
-  }
-
-  // 3. Afficher la page login
-  document.getElementById('loginPage').style.display = 'flex';
-}
-
-function getStudentIdentity() {
-  try { return JSON.parse(localStorage.getItem(STUDENT_KEY) || 'null'); }
-  catch { return null; }
-}
-
-
-/* Sync Supabase — utilise email au lieu de whatsapp */
-async function syncSaveToSupabase() {
-  try {
-    const sess = JSON.parse(localStorage.getItem(SESSION_KEY) || 'null');
-    if (!sess?.email) return;
-
-    const prenom  = localStorage.getItem(NAME_KEY) || sess.prenom || '';
-    const rentree = getStudentIdentity()?.rentree || '';
-    const checks  = JSON.parse(localStorage.getItem(CHECKS_KEY) || '{}');
-    const tcfDone = JSON.parse(localStorage.getItem(TCF_DONE_KEY) || '[]');
-
-    await fetch(_GAUTH_SB_URL + '/rest/v1/student_data?on_conflict=email', {
-      method: 'POST',
-      headers: {
-        'apikey':        _GAUTH_SB_KEY,
-        'Authorization': 'Bearer ' + _GAUTH_SB_KEY,
-        'Content-Type':  'application/json',
-        'Prefer':        'resolution=merge-duplicates'
-      },
-      body: JSON.stringify({
-        email, prenom, rentree, checks, tcf_done: tcfDone,
-        updated_at: new Date().toISOString()
-      })
-    });
-  } catch(e) { console.warn('[sync]', e.message); }
-}
-
-    );
-    const data = await res.json();
-    if (!Array.isArray(data) || !data.length) return;
-    const remote = data[0];
-
-    if (remote.prenom) {
-      localStorage.setItem(NAME_KEY, remote.prenom);
-      const id = getStudentIdentity() || {};
-      id.prenom = remote.prenom;
-      id.email  = sess.email;
-      id.rentree = remote.rentree || id.rentree || '';
-      localStorage.setItem(STUDENT_KEY, JSON.stringify(id));
-    }
-    if (remote.checks && Object.keys(remote.checks).length > 0) {
-      const local  = JSON.parse(localStorage.getItem(CHECKS_KEY) || '{}');
-      const merged = Object.assign({}, local, remote.checks);
-      localStorage.setItem(CHECKS_KEY, JSON.stringify(merged));
-    }
-    if (remote.tcf_done && remote.tcf_done.length > 0) {
-      const local  = JSON.parse(localStorage.getItem(TCF_DONE_KEY) || '[]');
-      const merged = [...new Set([...local, ...remote.tcf_done])];
-      localStorage.setItem(TCF_DONE_KEY, JSON.stringify(merged));
-    }
-  } catch(e) { console.warn('[sync restore]', e.message); }
-}
-
-/* Sync périodique */
-
-
-async 
-/* ════ SUPABASE AUTH — GOOGLE ════ */
-const _SB_URL2 = 'https://xrxlteycmcmztdqscfeq.supabase.co';
-const _SB_KEY2 = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhyeGx0ZXljbWNtenRkcXNjZmVxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyMDk5NDUsImV4cCI6MjA5Njc4NTk0NX0.nW_isNhNwAjWdzahAsccVE6kPsAJR2_ZBdTT6iDFh-s';
-
-const supabase = window.supabase.createClient(_SB_URL2, _SB_KEY2);
+/* ════ GOOGLE AUTH ════ */
+const _SB = window.supabase.createClient(
+  'https://xrxlteycmcmztdqscfeq.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhyeGx0ZXljbWNtenRkcXNjZmVxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyMDk5NDUsImV4cCI6MjA5Njc4NTk0NX0.nW_isNhNwAjWdzahAsccVE6kPsAJR2_ZBdTT6iDFh-s'
+);
 
 const SESSION_KEY  = 'ns_premium_v2';
 const NAME_KEY     = 'ns_student_name';
 const STUDENT_KEY  = 'ns_student_identity';
+const WHATSAPP_KEY = 'ns_student_whatsapp';
 const CHECKS_KEY   = 'ns_checks';
 const TCF_DONE_KEY = 'ns_tcf_done';
-const TARGET_DATE  = new Date('2027-10-01T00:00:00');
 
 function showLoginError(msg) {
   const el = document.getElementById('loginError');
   const mg = document.getElementById('loginErrorMsg');
-  if (el && mg) { mg.textContent = msg; el.style.display = 'flex'; }
+  if (el) el.style.display = 'flex';
+  if (mg) mg.textContent = msg;
 }
 
 function hasSession() {
@@ -3049,88 +2757,24 @@ function hasSession() {
 async function loginWithGoogle() {
   const btn = document.getElementById('googleBtn');
   if (btn) { btn.disabled = true; btn.textContent = 'Redirection...'; }
-
-  const { error } = await supabase.auth.signInWithOAuth({
+  const { error } = await _SB.auth.signInWithOAuth({
     provider: 'google',
     options: {
       redirectTo: 'https://nextstagefr.com/premium.html',
       queryParams: { access_type: 'offline', prompt: 'select_account' }
     }
   });
-
   if (error) {
-    showLoginError('Erreur de connexion Google : ' + error.message);
+    showLoginError('Erreur : ' + error.message);
     if (btn) { btn.disabled = false; btn.textContent = 'Se connecter avec Google'; }
   }
 }
 
-async function doLogout() {
-  await supabase.auth.signOut();
+function doLogout() {
+  _SB.auth.signOut();
   localStorage.removeItem(SESSION_KEY);
   localStorage.removeItem(STUDENT_KEY);
   location.reload();
-}
-
-async function handleAuthCallback() {
-  // Le SDK gère automatiquement le fragment #access_token dans l'URL
-  const { data: { session }, error } = await supabase.auth.getSession();
-  if (error || !session) return false;
-
-  const email = session.user?.email;
-  const prenom = session.user?.user_metadata?.full_name?.split(' ')[0]
-              || session.user?.user_metadata?.name?.split(' ')[0]
-              || email?.split('@')[0] || '';
-  const avatar = session.user?.user_metadata?.avatar_url || '';
-
-  if (!email) return false;
-
-  // Vérifier accès dans payments
-  const { data: pays, error: payErr } = await supabase
-    .from('payments')
-    .select('pack, status, prenom')
-    .ilike('email', email)
-    .eq('status', 'validated')
-    .eq('pack', 'premium')
-    .limit(1);
-
-  if (payErr || !pays || pays.length === 0) {
-    // Chercher si autre pack
-    const { data: autres } = await supabase
-      .from('payments')
-      .select('pack')
-      .ilike('email', email)
-      .eq('status', 'validated')
-      .limit(1);
-
-    await supabase.auth.signOut();
-
-    if (autres && autres.length > 0) {
-      showLoginError('Ton compte est Standard. Redirection...');
-      setTimeout(() => { window.location.href = 'standard.html'; }, 2000);
-    } else {
-      showLoginError("Aucun acces actif trouve pour cet email. Verifie que tu as bien paye ou contacte-nous.");
-    }
-    return false;
-  }
-
-  // Sauvegarder session locale
-  const prenomFinal = pays[0].prenom || prenom;
-  localStorage.setItem(SESSION_KEY, JSON.stringify({
-    ts: Date.now(), email,
-    prenom: prenomFinal, avatar
-  }));
-  localStorage.setItem(NAME_KEY, prenomFinal);
-
-  const identity = getStudentIdentity() || {};
-  identity.email  = email;
-  identity.prenom = prenomFinal;
-  identity.avatar = avatar;
-  localStorage.setItem(STUDENT_KEY, JSON.stringify(identity));
-
-  // Nettoyer URL
-  if (window.location.hash) window.history.replaceState({}, '', window.location.pathname);
-
-  return true;
 }
 
 function getStudentIdentity() {
@@ -3139,74 +2783,80 @@ function getStudentIdentity() {
 }
 
 function getStudentInfo() {
-  const sess = JSON.parse(localStorage.getItem(SESSION_KEY) || 'null');
-  return {
-    email:  sess?.email || '',
-    prenom: sess?.prenom || localStorage.getItem(NAME_KEY) || ''
-  };
+  const s = JSON.parse(localStorage.getItem(SESSION_KEY) || 'null');
+  return { email: s?.email || '', prenom: s?.prenom || localStorage.getItem(NAME_KEY) || '' };
 }
 
-async function initAuth() {
-  // Gérer retour OAuth
-  if (window.location.hash.includes('access_token')) {
-    const ok = await handleAuthCallback();
-    if (ok) { await syncRestoreFromSupabase(); showApp(); return; }
-    document.getElementById('loginPage').style.display = 'flex';
-    return;
+async function verifyAndSaveSession(session) {
+  const email  = session.user?.email;
+  const prenom = session.user?.user_metadata?.full_name?.split(' ')[0]
+              || session.user?.user_metadata?.name?.split(' ')[0]
+              || email?.split('@')[0] || '';
+  const avatar = session.user?.user_metadata?.avatar_url || '';
+  if (!email) return false;
+
+  const { data: pays } = await _SB
+    .from('payments')
+    .select('pack, status, prenom')
+    .ilike('email', email)
+    .eq('status', 'validated')
+    .eq('pack', 'premium')
+    .limit(1);
+
+  if (!pays || pays.length === 0) {
+    const { data: autres } = await _SB
+      .from('payments').select('pack')
+      .ilike('email', email).eq('status', 'validated').limit(1);
+    await _SB.auth.signOut();
+    if (autres && autres.length > 0 && autres[0].pack === 'standard') {
+      showLoginError('Ton compte est Standard. Redirection...');
+      setTimeout(() => { window.location.href = 'standard.html'; }, 2000);
+    } else {
+      showLoginError('Aucun acces Premium actif pour cet email. Contacte-nous si tu as paye.');
+    }
+    return false;
   }
 
-  // Session existante valide
-  initAuth();
-    showApp();
-    return;
-  }
-
-  // Vérifier session Supabase active
-  const { data: { session } } = await supabase.auth.getSession();
-  if (session?.user?.email) {
-    const ok = await handleAuthCallback();
-    if (ok) { await syncRestoreFromSupabase(); showApp(); return; }
-  }
-
-  document.getElementById('loginPage').style.display = 'flex';
+  const prenomFinal = pays[0].prenom || prenom;
+  localStorage.setItem(SESSION_KEY, JSON.stringify({ ts: Date.now(), email, prenom: prenomFinal, avatar }));
+  localStorage.setItem(NAME_KEY, prenomFinal);
+  const id = getStudentIdentity() || {};
+  id.email = email; id.prenom = prenomFinal; id.avatar = avatar;
+  localStorage.setItem(STUDENT_KEY, JSON.stringify(id));
+  if (window.location.hash) window.history.replaceState({}, '', window.location.pathname);
+  return true;
 }
 
 async function syncSaveToSupabase() {
   try {
-    const sess = JSON.parse(localStorage.getItem(SESSION_KEY) || 'null');
-    if (!sess?.email) return;
-    const prenom  = localStorage.getItem(NAME_KEY) || sess.prenom || '';
-    const rentree = getStudentIdentity()?.rentree || '';
-    const checks  = JSON.parse(localStorage.getItem(CHECKS_KEY) || '{}');
-    const tcfDone = JSON.parse(localStorage.getItem(TCF_DONE_KEY) || '[]');
-    await supabase.from('student_data').upsert({
-      email: sess.email, prenom, rentree,
-      checks, tcf_done: tcfDone,
+    const s = JSON.parse(localStorage.getItem(SESSION_KEY) || 'null');
+    if (!s?.email) return;
+    await _SB.from('student_data').upsert({
+      email: s.email,
+      prenom: localStorage.getItem(NAME_KEY) || s.prenom || '',
+      rentree: getStudentIdentity()?.rentree || '',
+      checks: JSON.parse(localStorage.getItem(CHECKS_KEY) || '{}'),
+      tcf_done: JSON.parse(localStorage.getItem(TCF_DONE_KEY) || '[]'),
       updated_at: new Date().toISOString()
     }, { onConflict: 'email' });
-  } catch(e) { console.warn('[sync save]', e.message); }
+  } catch(e) { console.warn('[sync]', e.message); }
 }
 
 async function syncRestoreFromSupabase() {
   try {
-    const sess = JSON.parse(localStorage.getItem(SESSION_KEY) || 'null');
-    if (!sess?.email) return;
-    const { data } = await supabase
-      .from('student_data')
-      .select('*')
-      .eq('email', sess.email)
-      .limit(1);
+    const s = JSON.parse(localStorage.getItem(SESSION_KEY) || 'null');
+    if (!s?.email) return;
+    const { data } = await _SB.from('student_data').select('*').eq('email', s.email).limit(1);
     if (!data || !data.length) return;
     const r = data[0];
     if (r.prenom) {
       localStorage.setItem(NAME_KEY, r.prenom);
       const id = getStudentIdentity() || {};
-      id.prenom  = r.prenom;
-      id.rentree = r.rentree || id.rentree || '';
+      id.prenom = r.prenom; id.rentree = r.rentree || id.rentree || '';
       localStorage.setItem(STUDENT_KEY, JSON.stringify(id));
     }
     if (r.checks && Object.keys(r.checks).length > 0) {
-      const local  = JSON.parse(localStorage.getItem(CHECKS_KEY) || '{}');
+      const local = JSON.parse(localStorage.getItem(CHECKS_KEY) || '{}');
       localStorage.setItem(CHECKS_KEY, JSON.stringify(Object.assign({}, local, r.checks)));
     }
     if (r.tcf_done && r.tcf_done.length > 0) {
@@ -3221,17 +2871,33 @@ setInterval(() => {
   if (s?.email) syncSaveToSupabase();
 }, 5 * 60 * 1000);
 
-async function showApp() {
+async function initAuth() {
+  const { data: { session } } = await _SB.auth.getSession();
+  if (session) {
+    if (!hasSession()) {
+      const ok = await verifyAndSaveSession(session);
+      if (!ok) { document.getElementById('loginPage').style.display = 'flex'; return; }
+    }
+    await syncRestoreFromSupabase();
+    showApp();
+    return;
+  }
+  if (hasSession()) {
+    await syncRestoreFromSupabase();
+    showApp();
+    return;
+  }
+  document.getElementById('loginPage').style.display = 'flex';
+}
+
+function showApp() {
   document.getElementById('loginPage').style.display = 'none';
-  await syncRestoreFromSupabase();
   document.getElementById('app').classList.add('active');
   loadChecklist();
   loadName();
   startCountdown();
   // Restaurer depuis Supabase si possible
-  const _sess = JSON.parse(localStorage.getItem(SESSION_KEY) || 'null');
-  const _wa = _sess?.whatsapp || getStudentIdentity()?.whatsapp;
-  if (_wa) syncRestoreSession(_wa).then(() => { loadChecklist(); loadName(); renderIcons(); });
+  syncRestoreFromSupabase().then(() => { loadChecklist(); loadName(); renderIcons(); });
   initPremiumFeatures();
   renderIcons();
 }
@@ -3242,7 +2908,7 @@ function renderIcons() {
 
 document.addEventListener('DOMContentLoaded', function() {
   renderIcons();
-  initAuth();
+  if (hasSession()) showApp();
 });
 
 /* ════ SIDEBAR ════ */
@@ -4028,7 +3694,6 @@ function saveProfileModal() {
 }
 
 /* ════ TCF ════ */
-const TCF_DONE_KEY = 'ns_tcf_done';
 let currentTcfIdx = null;
 const BASE_TCF = 'https://xrxlteycmcmztdqscfeq.supabase.co/storage/v1/object/public/tcf-annales/';
 const TCF_DATA = [
