@@ -2873,6 +2873,28 @@ setInterval(() => {
 }, 5 * 60 * 1000);
 
 async function initAuth() {
+  // Lire le token depuis le hash URL si present
+  const hash = window.location.hash;
+  if (hash && hash.includes('access_token')) {
+    const params = new URLSearchParams(hash.replace('#', ''));
+    const access_token  = params.get('access_token');
+    const refresh_token = params.get('refresh_token');
+    if (access_token) {
+      // Injecter la session dans Supabase manuellement
+      const { data: { session }, error } = await _SB.auth.setSession({
+        access_token, refresh_token: refresh_token || ''
+      });
+      window.history.replaceState({}, '', window.location.pathname);
+      if (session && !error) {
+        const ok = await verifyAndSaveSession(session);
+        if (ok) { await syncRestoreFromSupabase(); showApp(); return; }
+        document.getElementById('loginPage').style.display = 'flex';
+        return;
+      }
+    }
+  }
+
+  // Session Supabase existante
   const { data: { session } } = await _SB.auth.getSession();
   if (session) {
     if (!hasSession()) {
@@ -2883,11 +2905,14 @@ async function initAuth() {
     showApp();
     return;
   }
+
+  // Session locale valide
   if (hasSession()) {
     await syncRestoreFromSupabase();
     showApp();
     return;
   }
+
   document.getElementById('loginPage').style.display = 'flex';
 }
 
