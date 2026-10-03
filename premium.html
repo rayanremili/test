@@ -1146,8 +1146,8 @@
       Se connecter avec Google
     </button>
 
-    <div class="login-error" id="loginError" style="display:none;">
-      <i data-lucide="circle-x"></i>
+    <div class="login-error" id="loginError" style="display:none;margin-top:1rem;padding:0.75rem 1rem;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);border-radius:10px;color:#fca5a5;font-size:0.85rem;align-items:center;gap:0.5rem;">
+      <i data-lucide="circle-x" style="width:16px;height:16px;flex-shrink:0;"></i>
       <span id="loginErrorMsg">Une erreur est survenue.</span>
     </div>
     <div class="login-footer">
@@ -2743,8 +2743,9 @@ const TCF_DONE_KEY = 'ns_tcf_done';
 function showLoginError(msg) {
   const el = document.getElementById('loginError');
   const mg = document.getElementById('loginErrorMsg');
-  if (el) el.style.display = 'flex';
+  if (el) { el.style.display = 'flex'; el.style.setProperty('display', 'flex', 'important'); }
   if (mg) mg.textContent = msg;
+  console.warn('[Auth]', msg);
 }
 
 function hasSession() {
