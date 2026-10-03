@@ -2760,7 +2760,7 @@ async function loginWithGoogle() {
   const { error } = await _SB.auth.signInWithOAuth({
     provider: 'google',
     options: {
-      redirectTo: 'https://nextstagefr.com/premium.html',
+      redirectTo: 'https://test-nextstage.vercel.app/premium.html',
       queryParams: { access_type: 'offline', prompt: 'select_account' }
     }
   });
